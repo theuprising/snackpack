@@ -1,0 +1,35 @@
+{
+  "name": "snackpack",
+  "version": "0.0.1",
+  "description": "Sane defaults and configuration management for Webpack",
+  "main": "snackpack.js",
+  "devDependencies": {
+    "babel-cli": "^6.16.0",
+    "babel-preset-es2015": "^6.16.0"
+  },
+  "dependencies": {
+    "commander": "^2.9.0",
+    "lodash": "^4.16.3",
+    "webpack": "^1.13.2"
+  },
+  "bin": {
+    "snackpack": "./snackpack.js"
+  },
+  "scripts": {
+    "build": "echo '#!/usr/bin/env node' > ./snackpack.js ; ./node_modules/.bin/babel src/snackpack.js >> ./snackpack.js",
+    "prepublish": "npm run build"
+  },
+  "author": "Andrew J. Monks <a@monks.co>",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/theuprising/snackpack.git"
+  },
+  "keywords": [
+    "webpack"
+  ],
+  "bugs": {
+    "url": "https://github.com/theuprising/snackpack/issues"
+  },
+  "homepage": "https://github.com/theuprising/snackpack#readme"
+}
