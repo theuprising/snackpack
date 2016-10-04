@@ -22,7 +22,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } } // snackpack!
 
 // arg parser
-var cli = _commander2.default.version('0.0.1').option('-c, --conf-dir [projectcConfDir]', 'Set the configuration directory [./config/]', './config').option('-m, --manifest [manifestFile]', 'Set the manifest file [./snackpack.js]', './snackpack.js').option('-t, --task [task]', "Set the task (either 'watch', 'run', or 'config') [run]", 'run').option('-d, --debug', 'Use debug mode', false);
+var cli = _commander2.default.command('snackpack [environments...]').version('0.0.1').option('-c, --conf-dir [projectcConfDir]', 'Set the configuration directory [./config/]', './config').option('-m, --manifest [manifestFile]', 'Set the manifest file [./snackpack.js]', './snackpack.js').option('-t, --task [task]', "Set the task (either 'watch', 'run', or 'config') [run]", 'run').option('-d, --debug', 'Use debug mode', false);
 
 // logging
 var log = function log(val) {

@@ -7,6 +7,7 @@ import webpack from 'webpack'
 
 // arg parser
 const cli = commander
+  .command('snackpack [environments...]')
   .version('0.0.1')
   .option('-c, --conf-dir [projectcConfDir]', 'Set the configuration directory [./config/]', './config')
   .option('-m, --manifest [manifestFile]', 'Set the manifest file [./snackpack.js]', './snackpack.js')
