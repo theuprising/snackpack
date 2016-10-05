@@ -4,6 +4,10 @@ Sensible configuration for Webpack.
 
 Snackpack imports and merges configuration files, then passes them to webpack.
 
+**snackpack is not stable, this documentation is quickly becoming out of date.**
+
+When we start using it in production (soon) I'll kick off semver 1.0.0 and update the docs.
+
 ## Environments
 
 Snackpack has a notion of environments. Built in Snackpack modules use the environments `local`, `development`, and `production`, and `defaults`. Your projects can define their own environments, like `heroku`.
