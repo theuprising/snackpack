@@ -1,8 +1,10 @@
+#!/usr/bin/env node
+
 // snackpack!
 
 import commander from 'commander'
 import path from 'path'
-import { mergeWith, isArray } from 'lodash'
+import { mergeWith, isArray, isFunction } from 'lodash'
 import { Console } from 'console'
 import { inspect } from 'util'
 import webpack from 'webpack'
@@ -74,7 +76,7 @@ const snackpack = ({debugMode, confDir, manifestFile, environments, cmd}) => {
       return b
         ? builders.concat(b)
         : builders
-    }, [])
+    }, ['webpack'])
 
   debug({builders})
 
@@ -109,6 +111,11 @@ const snackpack = ({debugMode, confDir, manifestFile, environments, cmd}) => {
     return out
   }
 
+  const applyConfig = (oldConfig, newConfig) =>
+    isFunction(newConfig)
+      ? newConfig(oldConfig)
+      : mergeDeep(oldConfig, newConfig)
+
   // build config
   const buildConfig = (environments, builders) => {
     const config = environments.reduce((lastEnvironmentConfig, environment) => {
@@ -116,7 +123,7 @@ const snackpack = ({debugMode, confDir, manifestFile, environments, cmd}) => {
         debug(`builder: ${builder}, environment: ${environment}`)
         const newConfig = configFor(builder, environment)
         debug({lastBuilderConfig, newConfig})
-        const out = mergeDeep(lastBuilderConfig, newConfig)
+        const out = applyConfig(lastBuilderConfig, newConfig)
         debug({out})
         return out
       }, lastEnvironmentConfig)

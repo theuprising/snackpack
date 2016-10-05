@@ -16,7 +16,7 @@
     "snackpack": "./snackpack.js"
   },
   "scripts": {
-    "build": "echo '#!/usr/bin/env node' > snackpack.js ; ./node_modules/.bin/babel src/snackpack.js >> snackpack.js",
+    "build": "./babel-all.zsh",
     "prepublish": "npm run build"
   },
   "author": "Andrew J. Monks <a@monks.co>",
