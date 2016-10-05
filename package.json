@@ -1,6 +1,6 @@
 {
   "name": "snackpack",
-  "version": "0.0.2",
+  "version": "0.0.5",
   "description": "Sane defaults and configuration management for Webpack",
   "main": "snackpack.js",
   "devDependencies": {
@@ -16,7 +16,7 @@
     "snackpack": "./snackpack.js"
   },
   "scripts": {
-    "build": "echo '#!/usr/bin/env node' > ./snackpack.js ; ./node_modules/.bin/babel src/snackpack.js >> ./snackpack.js",
+    "build": "echo '#!/usr/bin/env node' > snackpack.js ; ./node_modules/.bin/babel src/snackpack.js >> snackpack.js",
     "prepublish": "npm run build"
   },
   "author": "Andrew J. Monks <a@monks.co>",

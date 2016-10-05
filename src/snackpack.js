@@ -2,141 +2,171 @@
 
 import commander from 'commander'
 import path from 'path'
-import merge from 'lodash'
+import { merge } from 'lodash'
 import webpack from 'webpack'
 
-// arg parser
-const cli = commander
-  .command('snackpack [environments...]')
-  .version('0.0.1')
-  .option('-c, --conf-dir [projectcConfDir]', 'Set the configuration directory [./config/]', './config')
-  .option('-m, --manifest [manifestFile]', 'Set the manifest file [./snackpack.js]', './snackpack.js')
-  .option('-t, --task [task]', "Set the task (either 'watch', 'run', or 'config') [run]", 'run')
-  .option('-d, --debug', 'Use debug mode', false)
+const meta = require('./package.json')
 
-// logging
-const log = val => { console.log(val); return val }
-const debug = val => command.debug ? log(val) : val
+const legalTasks = ['run', 'watch']
 
-// parse args
-const command = cli.parse(process.argv)
-const {task, confDir, manifestFile} = command
-const environments = ['defaults', ...command.args]
-debug({command, task, environments, confDir, manifestFile})
+const snackpack = ({log, debug, task, confDir, manifestFile, environments, dryRun}) => {
+  debug({task, confDir, manifestFile, environments, dryRun})
+  // validate args
+  if (legalTasks.indexOf(task) < 0) {
+    throw new Error(`${task} is an invalid task. It should be one of: ${legalTasks.join(', ')}`)
+  }
 
-// validate args
-const legalTasks = ['run', 'watch', 'config']
-if (legalTasks.indexOf(task) < 0) {
-  throw new Error(`${task} is an invalid task. It should be one of: ${legalTasks.join(', ')}`)
-}
+  // get cwd
+  const _cwd = process.cwd()
+  const makeProjectPath = (...p) => path.join(_cwd, ...p)
+  debug({_cwd})
 
-// get cwd
-const _cwd = process.cwd()
-const makeProjectPath = (...p) => path.join(_cwd, ...p)
-debug({_cwd})
+  // get builtIn dir
+  const makeSnackpackPath = (...p) => path.join(__dirname, ...p)
 
-// get builtIn dir
-const makeSnackpackPath = (...p) => path.join('.', ...p)
-
-// get manifest
-const manifestPath = makeProjectPath(command.manifest)
-let manifest
-try {
-  manifest = require(manifestPath).default
-} catch (e) {
-  throw new Error(`Could not load manifest file from ${manifestPath}: ${e}`)
-}
-debug({manifest})
-
-// get builder names
-const builders = ['webpack', ...manifest.builders]
-debug({builders})
-
-// config path getters
-const snackpackConfigPath = (builder, environment) => makeSnackpackPath('config', builder, environment)
-const projectConfigPath = (builder, environment) => makeProjectPath('config', builder, environment)
-
-// config getters
-const getConfig = pathGetter => (builder, environment) => {
-  const path = pathGetter(builder, environment)
-  let out
+  // get manifest
+  const manifestPath = makeProjectPath(manifestFile)
+  let manifest
   try {
-    const got = require(path)
-    out = got.default
+    manifest = require(manifestPath).default
   } catch (e) {
-    log(`no config specified for ${path}`)
-    out = {}
+    throw new Error(`Could not load manifest file from ${manifestPath}: ${e}`)
   }
-  return out
-}
+  debug({manifest})
 
-const snackpackConfigFor = getConfig(snackpackConfigPath)
-const projectConfigFor = getConfig(projectConfigPath)
+  // get builder names
+  const builders = environments
+  .reduce((builders, environment) => {
+    const b = manifest[environment]
+    return b
+      ? builders.concat(b)
+      : builders
+  })
 
-const configFor = (builder, environment) => {
-  const builderConfig = snackpackConfigFor(builder, environment)
-  const projectConfig = projectConfigFor(builder, environment)
-  const out = merge(builderConfig, projectConfig).value()
-  debug(`config for builder: ${builder}, environment: ${environment}`, {builderConfig, projectConfig, out})
-  return out
-}
+  debug({builders})
 
-debug('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+  // config path getters
+  const snackpackConfigPath = (builder, environment) => makeSnackpackPath('config', builder, environment)
+  const projectConfigPath = (builder, environment) => makeProjectPath(confDir, builder, environment)
 
-// build config
-const buildConfig = (environments, builders) => {
-  const config = environments.reduce((lastConfig, environment) => {
-    debug('doing environment', environment)
-    return builders.reduce((lastConfig, builder) => {
-      debug(`builder: ${builder}, environment: ${environment}`)
-      const newConfig = configFor(builder, environment)
-      debug({lastConfig, newConfig})
-      return merge(lastConfig, newConfig).value()
-    }, lastConfig)
-  }, {})
-  debug({config})
-  return config
-}
+  // config getters
+  const getConfig = pathGetter => (builder, environment) => {
+    const path = pathGetter(builder, environment)
+    let out
+    try {
+      const got = require(path).default
+      out = got
+      log(`using config file at ${path}.js`)
+    } catch (e) {
+      log(`no config file at ${path}.js`)
+      out = {}
+    }
+    return out
+  }
 
-const webpackCallback = (err, stats) => {
-  if (err) throw new Error(`error running webpack: ${err}`)
-  debug({stats})
-}
+  const snackpackConfigFor = debug(getConfig(debug(snackpackConfigPath)))
+  const projectConfigFor = debug(getConfig(debug(projectConfigPath)))
 
-const webpackRun = config => {
-  const compiler = webpack(config)
-  return compiler.run(webpackCallback)
-}
+  const configFor = (builder, environment) => {
+    const builderConfig = snackpackConfigFor(builder, environment)
+    const projectConfig = projectConfigFor(builder, environment)
+    const out = merge(builderConfig, projectConfig)
+    debug(`config for builder: ${builder}, environment: ${environment}:`)
+    debug(out)
+    return out
+  }
 
-const webpackWatch = config => {
-  const compiler = webpack(config)
-  return compiler.watch({
-    aggregateTimeout: 300,
-    poll: true
-  }, webpackCallback)
-}
+  debug('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
 
-const webpackDo = verb => {
-  if (verb === 'run') return webpackRun
-  if (verb === 'watch') return webpackWatch
-  throw new Error(`I don't know how to make webpack ${verb}, only 'run', and 'watch'.`)
-}
+  // build config
+  const buildConfig = (environments, builders) => {
+    const config = environments.reduce((lastEnvironmentConfig, environment) => {
+      return builders.reduce((lastBuilderConfig, builder) => {
+        debug(`builder: ${builder}, environment: ${environment}`)
+        const newConfig = configFor(builder, environment)
+        debug({lastBuilderConfig, newConfig})
+        const out = merge(lastBuilderConfig, newConfig)
+        debug({out})
+        return out
+      }, lastEnvironmentConfig)
+    }, {})
+    debug({config})
+    return config
+  }
 
-let watcher
-;(task => {
+  const webpackCallback = (err, stats) => {
+    if (err) throw new Error(`error running webpack: ${err}`)
+    const jsonStats = stats.toJson()
+    if (jsonStats.errors.length > 0) throw new Error(`error running webpack: ${JSON.stringify(jsonStats.errors)}`)
+    if (jsonStats.warnings.length > 0) throw new Error(`webpack warning: ${JSON.stringify(jsonStats.warning)}`)
+    debug({stats})
+  }
+
+  const webpackRun = config => {
+    const compiler = webpack(config)
+    return compiler.run(webpackCallback)
+  }
+
+  const webpackWatch = config => {
+    const compiler = webpack(config)
+    return compiler.watch({
+      aggregateTimeout: 300,
+      poll: true
+    }, webpackCallback)
+  }
+
+  const webpackDo = verb => {
+    if (verb === 'run') return webpackRun
+    if (verb === 'watch') return webpackWatch
+    throw new Error(`I don't know how to make webpack ${verb}, only 'run', and 'watch'.`)
+  }
+
   const config = buildConfig(environments, builders)
-  switch (task) {
-    case 'config': return config
-    case 'run':
-      return webpackDo(task)(config)
-    case 'watch':
-      const w = webpackDo(task)(config)
-      watcher = w
-      return w
-    default: return false
+  if (dryRun) {
+    console.log('exports.default =', config)
   }
-})(task)
 
-const keepWatch = () => { if (watcher) { debug('still watching'); setTimeout(keepWatch, 1000) } }
-keepWatch()
+  ;(task => {
+    switch (task) {
+      case 'run':
+        return webpackDo(task)(config)
+      case 'watch':
+        return webpackDo(task)(config)
+      default: return false
+    }
+  })(task)
+
+  const keepWatch = () => { if (task === 'watch') { log('still watching'); setTimeout(keepWatch, 5000) } }
+  keepWatch()
+}
+
+// arg parser
+commander
+  .version(meta.version)
+  .usage('[options] [environments...]')
+  .arguments('[environments...]')
+  .option('-c, --conf-dir [confDir]', 'Set the configuration directory [config]', 'config')
+  .option('-m, --manifest [manifest]', 'Set the manifest file [snackpack.js]', 'snackpack.js')
+  .option('-n, --dry-run', `Just output the config, don't actually do anything with it`)
+  .option('-t, --task [task]', `Set the task (either: ${legalTasks.join(', ')}) [run]`, 'run')
+  .option('-s, --silent', `Don't log anything. If you use silent with dry-run, you can pipe the output to a webpack.config file`)
+  .option('-d, --debug-mode', 'Use debug mode')
+  .action((_environments, command) => {
+    // parse args
+    const {confDir, manifest, task, dryRun, debugMode, silent} = command
+    const environments = ['defaults', ..._environments]
+
+    // logging
+    const log = val => { if (!silent) { console.log(val) }; return val }
+    const debug = val => {
+      if (debugMode && !silent) {
+        log('')
+        log(val)
+      }
+      return val
+    }
+
+    snackpack({task, environments, confDir, manifestFile: manifest, dryRun, log, debug})
+  })
+  .parse(process.argv)
 
