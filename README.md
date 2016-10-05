@@ -6,6 +6,8 @@ Snackpack imports and merges configuration files, then passes them to webpack.
 
 **snackpack is not stable, this documentation is quickly becoming out of date.**
 
+[this example project](https://github.com/theuprising/snackpack-example) _is_ up to date.
+
 When we start using it in production (soon) I'll kick off semver 1.0.0 and update the docs.
 
 ## Environments
