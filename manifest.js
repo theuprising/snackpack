@@ -1,6 +1,5 @@
 exports.default = {
-  builders: [
-    'js',
-    'postcss'
-  ]
+  defaults: {
+    builders: ['babel']
+  }
 }
