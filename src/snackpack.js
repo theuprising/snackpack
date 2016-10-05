@@ -2,29 +2,51 @@
 
 import commander from 'commander'
 import path from 'path'
-import { merge } from 'lodash'
+import { mergeWith, isArray } from 'lodash'
 import { Console } from 'console'
+import { inspect } from 'util'
+import webpack from 'webpack'
+
+const colorize = x => inspect(x, false, 3, true)
+
+const identity = x => x
+
+const passthrough = (stream, formatter) => {
+  const c = new Console(stream, stream)
+  const f = formatter ? formatter : identity
+  return msg => { c.log(f(msg)); return msg }
+}
+const stderr = passthrough(process.stderr, colorize)
+const stdout = passthrough(process.stdout, colorize)
+
+const concatArraysMergeCustomizer = (objValue, srcValue) => {
+  if (isArray(objValue)) {
+    return objValue.concat(srcValue);
+  }
+}
+
+const mergeDeep = (...objs) => mergeWith(...objs, (objValue, srcValue) => {
+  if (isArray(objValue)) {
+    return objValue.concat(srcValue);
+  }
+})
+
+const handleWebpackErrors = (err, stats) => {
+  if (err) { stderr(err); throw new Error(`webpack build error: ${err}`) }
+  const statsAsJson = stats.toJson()
+  if (statsAsJson.errors.length > 0) { stderr(statsAsJson.errors); throw new Error(`webpack build error: ${statsAsJson.errors}`) }
+  if (statsAsJson.warnings.length > 0) stderr(statsAsJson.warnings)
+}
 
 const meta = require('./package.json')
 
-const snackpack = ({debugMode, confDir, manifestFile, environments}) => {
-  const passthrough = stream => {
-    const c = new Console(stream, stream)
-    return msg => { c.log(msg); return msg }
-  }
-  const stderr = passthrough(process.stderr)
-  const stdout = passthrough(process.stdout)
-
-  const log = stderr
+const snackpack = ({debugMode, confDir, manifestFile, environments, cmd}) => {
   const debug =
     debugMode
       ? stderr
-      : x => x
+      : identity
 
-  // const log = m => {console.log(m); return m}
-  // const debug = log
-
-  debug({confDir, manifestFile, environments})
+  debug({confDir, manifestFile, environments, cmd, debugMode})
   //
   // get cwd
   const _cwd = process.cwd()
@@ -67,9 +89,9 @@ const snackpack = ({debugMode, confDir, manifestFile, environments}) => {
     try {
       const got = require(path).default
       out = got
-      log(`using config file at ${path}.js`)
+      stderr(`using config file at ${path}.js`)
     } catch (e) {
-      log(`no config file at ${path}.js`)
+      stderr(`no config file at ${path}.js`)
       out = {}
     }
     return out
@@ -81,7 +103,7 @@ const snackpack = ({debugMode, confDir, manifestFile, environments}) => {
   const configFor = (builder, environment) => {
     const builderConfig = snackpackConfigFor(builder, environment)
     const projectConfig = projectConfigFor(builder, environment)
-    const out = merge(builderConfig, projectConfig)
+    const out = mergeDeep(builderConfig, projectConfig)
     debug(`config for builder: ${builder}, environment: ${environment}:`)
     debug(out)
     return out
@@ -94,7 +116,7 @@ const snackpack = ({debugMode, confDir, manifestFile, environments}) => {
         debug(`builder: ${builder}, environment: ${environment}`)
         const newConfig = configFor(builder, environment)
         debug({lastBuilderConfig, newConfig})
-        const out = merge(lastBuilderConfig, newConfig)
+        const out = mergeDeep(lastBuilderConfig, newConfig)
         debug({out})
         return out
       }, lastEnvironmentConfig)
@@ -104,16 +126,53 @@ const snackpack = ({debugMode, confDir, manifestFile, environments}) => {
   }
 
   const config = buildConfig(environments, builders)
-  stdout('exports.default=' + JSON.stringify(config))
 
-  log('done')
+  const webpackCallback = (err, stats) => {
+    handleWebpackErrors(err, stats)
+    debug({stats})
+  }
+
+  const webpackRun = config => {
+    const compiler = webpack(config)
+    return compiler.run(webpackCallback)
+  }
+
+  const webpackWatch = config => {
+    const compiler = webpack(config)
+    return compiler.watch({
+      aggregateTimeout: 300,
+      poll: true
+    }, webpackCallback)
+  }
+
+  const webpackDo = verb => {
+    if (verb === 'run') return webpackRun
+    if (verb === 'watch') return webpackWatch
+    throw new Error(`I don't know how to make webpack ${verb}, only 'run', and 'watch'.`)
+  }
+
+  stdout('done')
+  debug(config)
+
+  switch (cmd) {
+    case 'config':
+      return config
+    case 'run':
+    case 'watch':
+      return webpackDo(cmd)(config)
+    default:
+      return new Error('bad command')
+  }
+
+
+  return config
 }
 
 // arg parser
 const command = commander
   .version(meta.version)
-  .usage('[options] [environments...]')
-  .arguments('[environments...]')
+  .usage('<cmd> [options] [environments...]')
+  .arguments('<cmd> [environments...]')
   .option('-c, --conf-dir [confDir]', 'Set the configuration directory [config]', 'config')
   .option('-m, --manifest [manifest]', 'Set the manifest file [snackpack.js]', 'snackpack.js')
   .option('-d, --debug-mode', 'Use debug mode')
@@ -121,7 +180,10 @@ const command = commander
 
 // parse args
 const {confDir, manifest, debugMode, args} = command
-const environments = ['defaults', ...args]
+const [cmd, ..._environments] = args
+const environments = ['defaults', ..._environments]
 
-snackpack({environments, confDir, manifestFile: manifest, debugMode})
+const confOutput = snackpack({environments, confDir, manifestFile: manifest, debugMode, cmd})
+
+export default snackpack
 
