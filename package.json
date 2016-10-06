@@ -10,6 +10,7 @@
   "dependencies": {
     "commander": "^2.9.0",
     "lodash": "^4.16.3",
+    "ramda": "^0.22.1",
     "webpack": "^1.13.2"
   },
   "bin": {
@@ -17,8 +18,12 @@
   },
   "scripts": {
     "build": "./babel-all.zsh",
-    "prepublish": "npm run build"
+    "prepublish": "echo `pwd` ; npm run build"
   },
+  "files": [
+    "config",
+    "server.js"
+  ],
   "author": "Andrew J. Monks <a@monks.co>",
   "license": "ISC",
   "repository": {

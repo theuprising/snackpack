@@ -93,6 +93,7 @@ const snackpack = ({debugMode, confDir, manifestFile, environments, cmd}) => {
       out = got
       stderr(`using config file at ${path}.js`)
     } catch (e) {
+      debug(e)
       stderr(`no config file at ${path}.js`)
       out = {}
     }
@@ -167,6 +168,9 @@ const snackpack = ({debugMode, confDir, manifestFile, environments, cmd}) => {
     case 'run':
     case 'watch':
       return webpackDo(cmd)(config)
+    case 'serve':
+      const server = require('./server').default(config)
+      server.start()
     default:
       return new Error('bad command')
   }

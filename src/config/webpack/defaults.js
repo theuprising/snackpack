@@ -8,7 +8,7 @@ exports.default = {
   },
   output: {
     path: path.join(process.cwd(), 'dist'),
-    publicPath: '/',
+    publicPath: '/hoodoo',
     filename: 'index.js'
   },
   entry: ['index.js'],
