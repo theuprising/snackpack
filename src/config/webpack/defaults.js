@@ -3,7 +3,7 @@ const path = require('path')
 exports.default = {
   plugins: [],
   module: {
-    noParse: /^\..+$/, // ???
+    noParse: /^\..+$/, // do not parse hidden files
     loaders: []
   },
   output: {
