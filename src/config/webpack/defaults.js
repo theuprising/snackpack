@@ -1,4 +1,6 @@
+import { compose, map } from 'ramda'
 import path from 'path'
+import glob from 'glob'
 import CopyWebpackPlugin from 'copy-webpack-plugin'
 
 export default {
@@ -19,12 +21,8 @@ export default {
   entry: ['index.js'],
   resolve: {
     moduleDirectories: ['node_modules'],
-    root: [
-      path.resolve('./src'),
-      path.resolve('./src/js')
-    ],
+    root: map(path.resolve)(glob.sync('./src/*')),
     packageMains: ['webpack', 'browser', 'web', 'main'], // use the files in package.json.main, etc
-    extensions: ['', '.js', '.json']
+  // extensions: ['', '.js', '.json']
   }
 }
-

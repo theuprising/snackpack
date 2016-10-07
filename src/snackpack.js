@@ -17,7 +17,8 @@ const identity = x => x
 const passthrough = (stream, formatter) => {
   const c = new Console(stream, stream)
   const f = formatter || identity
-  return msg => { c.log(f(msg)); return msg }
+  return msg => {
+    c.log(f(msg)); return msg}
 }
 const stderr = passthrough(process.stderr, colorize)
 const stdout = passthrough(process.stdout, colorize)
@@ -39,9 +40,9 @@ const meta = require('./package.json')
 
 const snackpack = ({debugMode, confDir, manifestFile, environments, cmd}) => {
   const debug =
-    debugMode
-      ? stderr
-      : identity
+  debugMode
+    ? stderr
+    : identity
 
   debug({confDir, manifestFile, environments, cmd, debugMode})
   //
@@ -107,10 +108,9 @@ const snackpack = ({debugMode, confDir, manifestFile, environments, cmd}) => {
     return out
   }
 
-  const applyConfig = (oldConfig, newConfig) =>
-    isFunction(newConfig)
-      ? newConfig(oldConfig)
-      : mergeDeep(oldConfig, newConfig)
+  const applyConfig = (oldConfig, newConfig) => isFunction(newConfig)
+    ? newConfig(oldConfig)
+    : mergeDeep(oldConfig, newConfig)
 
   // build config
   const buildConfig = (environments, builders) => {
@@ -118,7 +118,6 @@ const snackpack = ({debugMode, confDir, manifestFile, environments, cmd}) => {
       return builders.reduce((lastBuilderConfig, builder) => {
         debug(`builder: ${builder}, environment: ${environment}`)
         const newConfig = configFor(builder, environment)
-        debug({lastBuilderConfig, newConfig})
         const out = applyConfig(lastBuilderConfig, newConfig)
         debug({out})
         return out
@@ -132,7 +131,7 @@ const snackpack = ({debugMode, confDir, manifestFile, environments, cmd}) => {
 
   const webpackCallback = (err, stats) => {
     handleWebpackErrors(err, stats)
-    debug({stats})
+  // debug({stats})
   }
 
   const webpackRun = config => {
@@ -188,4 +187,3 @@ const environments = ['defaults', ..._environments]
 snackpack({environments, confDir, manifestFile: manifest, debugMode, cmd})
 
 export default snackpack
-
