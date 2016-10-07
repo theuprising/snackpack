@@ -8,28 +8,23 @@ import { mergeWith, isArray, isFunction } from 'lodash'
 import { Console } from 'console'
 import { inspect } from 'util'
 import webpack from 'webpack'
+import WebpackDevServer from 'webpack-dev-server'
 
-const colorize = x => inspect(x, false, 3, true)
+const colorize = x => inspect(x, false, 5, true)
 
 const identity = x => x
 
 const passthrough = (stream, formatter) => {
   const c = new Console(stream, stream)
-  const f = formatter ? formatter : identity
+  const f = formatter || identity
   return msg => { c.log(f(msg)); return msg }
 }
 const stderr = passthrough(process.stderr, colorize)
 const stdout = passthrough(process.stdout, colorize)
 
-const concatArraysMergeCustomizer = (objValue, srcValue) => {
-  if (isArray(objValue)) {
-    return objValue.concat(srcValue);
-  }
-}
-
 const mergeDeep = (...objs) => mergeWith(...objs, (objValue, srcValue) => {
   if (isArray(objValue)) {
-    return objValue.concat(srcValue);
+    return objValue.concat(srcValue)
   }
 })
 
@@ -153,12 +148,6 @@ const snackpack = ({debugMode, confDir, manifestFile, environments, cmd}) => {
     }, webpackCallback)
   }
 
-  const webpackDo = verb => {
-    if (verb === 'run') return webpackRun
-    if (verb === 'watch') return webpackWatch
-    throw new Error(`I don't know how to make webpack ${verb}, only 'run', and 'watch'.`)
-  }
-
   stdout('done')
   debug(config)
 
@@ -166,15 +155,17 @@ const snackpack = ({debugMode, confDir, manifestFile, environments, cmd}) => {
     case 'config':
       return config
     case 'run':
+      return webpackRun(config)
     case 'watch':
-      return webpackDo(cmd)(config)
+      return webpackWatch(config)
     case 'serve':
-      const server = require('./server').default(config)
-      server.start()
+      const compiler = webpack(config)
+      const server = new WebpackDevServer(compiler, config.devServer)
+      server.listen(8080, '127.0.0.1', () => console.log('listening on port 8080'))
+      break
     default:
       return new Error('bad command')
   }
-
 
   return config
 }
@@ -194,7 +185,7 @@ const {confDir, manifest, debugMode, args} = command
 const [cmd, ..._environments] = args
 const environments = ['defaults', ..._environments]
 
-const confOutput = snackpack({environments, confDir, manifestFile: manifest, debugMode, cmd})
+snackpack({environments, confDir, manifestFile: manifest, debugMode, cmd})
 
 export default snackpack
 

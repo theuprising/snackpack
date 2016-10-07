@@ -7,8 +7,8 @@ const addStructure = merge({
   module: { loaders: [] },
   plugins: [],
   devServer: {
-    // hot: true,
-    https: true,
+    hot: true,
+    // inline: true,
     compress: true,
     contentBase: './dist',
     colors: true
@@ -16,7 +16,7 @@ const addStructure = merge({
 
 const evolver = evolve({
   entry: concat([
-    'webpack-dev-server/client?http://0.0.0.0:3000',
+    'webpack-dev-server/client?http://localhost:8080',
     'webpack/hot/only-dev-server'
   ]),
   module: {

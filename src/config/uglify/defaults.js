@@ -1,6 +1,7 @@
 exports.default = {
   optimize: {
-    minimize: true
+    minimize: true,
+    dedupe: true
   }
 }
 

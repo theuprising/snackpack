@@ -1,21 +1,29 @@
-const path = require('path')
+import path from 'path'
+import CopyWebpackPlugin from 'copy-webpack-plugin'
 
-exports.default = {
-  plugins: [],
+export default {
+  plugins: [
+    new CopyWebpackPlugin([
+      { from: 'resources/index.html' }
+    ])
+  ],
   module: {
     noParse: /^\..+$/, // do not parse hidden files
     loaders: []
   },
   output: {
     path: path.join(process.cwd(), 'dist'),
-    publicPath: '/hoodoo',
+    publicPath: '/',
     filename: 'index.js'
   },
   entry: ['index.js'],
   resolve: {
-    root: path.join(process.cwd(), 'src'),
     moduleDirectories: ['node_modules'],
-    packageMains: ['webpack', 'browser', 'web', 'main'], // ???
+    root: [
+      path.resolve('./src'),
+      path.resolve('./src/js')
+    ],
+    packageMains: ['webpack', 'browser', 'web', 'main'], // use the files in package.json.main, etc
     extensions: ['', '.js', '.json']
   }
 }
