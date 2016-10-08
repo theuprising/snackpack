@@ -58,17 +58,11 @@ copy this into your package.json:
 
 (Local and development are environments, as specified in the manifest)
 
-## Environments
+## Builders
 
-Snackpack has a notion of environments. Built in Snackpack modules use the environments `local`, `development`, and `production`, and `defaults`. Your projects can define their own environments, like `heroku`.
+You can write your own builders, and put them into `[your project]/config/snackpack/[builder]/[environment].js`.
 
-##  Builders
-
-Your project declares a list of builders, like `js`, or `postcss`.
-
-A builder exports webpack configuration data for some environments.
-
-The webpack builder is automatically included in every project, before other builders.
+The `defaults` environment will always be applied before any other environments.
 
 ##  The merge
 
