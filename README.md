@@ -52,7 +52,8 @@ copy this into your package.json:
 "scripts": {
   "build": "snackpack run production",
   "build:watch": "snackpack watch local",
-  "serve": "snackpack serve local"
+  "serve": "snackpack serve local",
+  "serve:production": "snackpack serve local production"
 },
 ```
 
