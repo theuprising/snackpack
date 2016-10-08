@@ -46,10 +46,15 @@ snackpack.json
 
 ##  Usage
 
-`./node_modules/.bin/snackpack serve local`
+copy this into your package.json:
 
-`./node_modules/.bin/snackpack build production`
-
+```json
+"scripts": {
+  "build": "snackpack run production",
+  "build:watch": "snackpack watch local",
+  "serve": "snackpack serve local"
+},
+```
 
 (Local and development are environments, as specified in the manifest)
 
