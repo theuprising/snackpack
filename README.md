@@ -10,6 +10,49 @@ The example project _is_ up to date.
 
 When we start using it in production (soon) I'll kick off semver 1.0.0 and update the docs.
 
+## Installation
+
+`npm install --save-dev snackpack`
+
+## Setup
+
+snackpack.json
+
+```json
+{
+  "environments": {
+    "defaults": {
+      "builders": [
+        "babel",
+        "jsx",
+        "postcss",
+        "pug",
+        "html"
+      ]
+    },
+    "production": {
+      "builders": [
+        "uglify"
+      ]
+    },
+    "local": {
+      "builders": [
+        "webpack-dev-server"
+      ]
+    }
+  }
+}
+```
+
+##  Usage
+
+`./node_modules/.bin/snackpack serve local`
+
+`./node_modules/.bin/snackpack build production`
+
+
+(Local and development are environments, as specified in the manifest)
+
 ## Environments
 
 Snackpack has a notion of environments. Built in Snackpack modules use the environments `local`, `development`, and `production`, and `defaults`. Your projects can define their own environments, like `heroku`.
@@ -53,17 +96,3 @@ Then your project can have some defaults for each builder.
 Then the same path for each environment specified.
 
 Each builder ships with defaults that should just work for development and production, but your project always gets the final say if need be.
-
-## Installation
-
-`npm install --save-dev snackpack`
-
-## Setup
-
-Snackpack
-
-##  Usage
-
-`./node_modules/.bin/snackpack local development`
-
-(Local and development are environments)
