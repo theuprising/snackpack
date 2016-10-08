@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 
 require('../css/index.css')
 require('../pug/index.pug')
+require('../html/index2.html')
 
 const List = ({children}) => (
   <ul>

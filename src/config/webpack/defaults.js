@@ -1,4 +1,4 @@
-import { compose, map } from 'ramda'
+import { map } from 'ramda'
 import path from 'path'
 import glob from 'glob'
 import CopyWebpackPlugin from 'copy-webpack-plugin'
@@ -7,7 +7,7 @@ import { projectPath, manifest } from '../../util'
 export default {
   plugins: [
     new CopyWebpackPlugin([
-      { from: `${manifest.paths.resources}/**/*` }
+      { from: `${manifest.paths.resources}` }
     ])
   ],
   module: {
