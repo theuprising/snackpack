@@ -4,11 +4,12 @@
 
 import commander from 'commander'
 import path from 'path'
-import { mergeWith, isArray, isFunction } from 'lodash'
+import { merge, mergeWith, isArray, isFunction } from 'lodash'
 import { Console } from 'console'
 import { inspect } from 'util'
 import webpack from 'webpack'
 import WebpackDevServer from 'webpack-dev-server'
+import defaultManifest from './default-manifest'
 
 const colorize = x => inspect(x, false, 5, true)
 
@@ -18,7 +19,8 @@ const passthrough = (stream, formatter) => {
   const c = new Console(stream, stream)
   const f = formatter || identity
   return msg => {
-    c.log(f(msg)); return msg}
+    c.log(f(msg)); return msg
+  }
 }
 const stderr = passthrough(process.stderr, colorize)
 const stdout = passthrough(process.stdout, colorize)
@@ -36,38 +38,41 @@ const handleWebpackErrors = (err, stats) => {
   if (statsAsJson.warnings.length > 0) stderr(statsAsJson.warnings)
 }
 
-const meta = require('./package.json')
+const meta = require('../package.json')
 
 const snackpack = ({debugMode, confDir, manifestFile, environments, cmd}) => {
-  const debug =
-  debugMode
+  // logging function
+  const debug = debugMode
     ? stderr
     : identity
 
   debug({confDir, manifestFile, environments, cmd, debugMode})
-  //
+
   // get cwd
-  const _cwd = process.cwd()
-  const makeProjectPath = (...p) => path.join(_cwd, ...p)
-  debug({_cwd})
+  const makeProjectPath = (cwd =>
+    (...p) => path.join(cwd, ...p)
+  )(process.cwd())
 
   // get builtIn dir
   const makeSnackpackPath = (...p) => path.join(__dirname, ...p)
 
   // get manifest
-  const manifestPath = makeProjectPath(manifestFile)
-  let manifest
-  try {
-    manifest = require(manifestPath).default
-  } catch (e) {
-    throw new Error(`Could not load manifest file from ${manifestPath}: ${e}`)
-  }
-  debug({manifest})
+  const manifest = global.__snackpackManifest = (defaults => path => {
+    const manifestPath = makeProjectPath(path)
+    let manifest
+    try {
+      manifest = require(manifestPath)
+    } catch (e) {
+      throw new Error(`Could not load manifest file from ${manifestPath}: ${e}`)
+    }
+    debug({manifest})
+    return merge(defaults, manifest)
+  })(defaultManifest)(manifestFile)
 
   // get builder names
   const builders = environments
     .reduce((builders, environment) => {
-      const e = manifest[environment]
+      const e = manifest.environments[environment]
       const b = e && e.builders ? e.builders : []
       return b
         ? builders.concat(b)
@@ -122,7 +127,7 @@ const snackpack = ({debugMode, confDir, manifestFile, environments, cmd}) => {
         debug({out})
         return out
       }, lastEnvironmentConfig)
-    }, {})
+    }, {snackpack: manifest})
     debug({config})
     return config
   }
@@ -175,7 +180,7 @@ const command = commander
   .usage('<cmd> [options] [environments...]')
   .arguments('<cmd> [environments...]')
   .option('-c, --conf-dir [confDir]', 'Set the configuration directory [config]', 'config')
-  .option('-m, --manifest [manifest]', 'Set the manifest file [snackpack.js]', 'snackpack.js')
+  .option('-m, --manifest [manifest]', 'Set the manifest file [snackpack.json]', 'snackpack.json')
   .option('-d, --debug-mode', 'Use debug mode')
   .parse(process.argv)
 

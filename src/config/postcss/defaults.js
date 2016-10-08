@@ -7,16 +7,17 @@ const addStructure = merge({
   entry: []
 })
 
+const evolver = evolve({
+  module: {
+    loaders: append({
+      test: /\.css$/,
+      loader: 'style-loader!css-loader!postcss-loader'
+    })
+  }
+})
+
 export default compose(
-  evolve({
-    entry: append('index.css'),
-    module: {
-      loaders: append({
-        test: /\.css$/,
-        loader: 'style-loader!css-loader!postcss-loader'
-      })
-    }
-  }),
   set(lensProp('postcss'), () => [precss, autoprefixer]),
+  evolver,
   addStructure
 )

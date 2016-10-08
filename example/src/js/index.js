@@ -1,6 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import style from '../css/index.css'
+
+require('../css/index.css')
+require('../pug/index.pug')
 
 const List = ({children}) => (
   <ul>

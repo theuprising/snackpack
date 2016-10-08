@@ -2,7 +2,7 @@
   "name": "snackpack",
   "version": "0.0.4",
   "description": "Sane defaults and configuration management for Webpack",
-  "main": "snackpack.js",
+  "main": "./dist/snackpack.js",
   "devDependencies": {
     "babel-cli": "^6.16.0",
     "babel-preset-es2015": "^6.16.0"
@@ -13,24 +13,28 @@
     "commander": "^2.9.0",
     "copy-webpack-plugin": "^3.0.1",
     "css-loader": "^0.25.0",
+    "file-loader": "^0.9.0",
     "glob": "^7.1.0",
     "lodash": "^4.16.3",
     "postcss-loader": "^0.13.0",
     "precss": "^1.4.0",
+    "pug": "^2.0.0-beta6",
+    "pug-html-loader": "file:src/loaders/pug-html-loader",
+    "pug-loader": "^2.3.0",
+    "pug-static": "^1.0.1",
     "ramda": "^0.22.1",
     "style-loader": "^0.13.1",
     "webpack": "^1.13.2"
   },
   "bin": {
-    "snackpack": "./snackpack.js"
+    "snackpack": "./dist/snackpack.js"
   },
   "scripts": {
     "build": "./babel-all.zsh",
     "prepublish": "echo `pwd` ; npm run build"
   },
   "files": [
-    "config",
-    "server.js"
+    "dist"
   ],
   "author": "Andrew J. Monks <a@monks.co>",
   "license": "ISC",

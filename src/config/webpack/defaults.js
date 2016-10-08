@@ -2,11 +2,12 @@ import { compose, map } from 'ramda'
 import path from 'path'
 import glob from 'glob'
 import CopyWebpackPlugin from 'copy-webpack-plugin'
+import { projectPath, manifest } from '../../util'
 
 export default {
   plugins: [
     new CopyWebpackPlugin([
-      { from: 'resources/index.html' }
+      { from: `${manifest.paths.resources}/**/*` }
     ])
   ],
   module: {
@@ -14,15 +15,15 @@ export default {
     loaders: []
   },
   output: {
-    path: path.join(process.cwd(), 'dist'),
+    path: path.join(projectPath, manifest.paths.dist),
     publicPath: '/',
-    filename: 'index.js'
+    filename: manifest.builders.webpack.outputFilename
   },
   entry: ['index.js'],
   resolve: {
     moduleDirectories: ['node_modules'],
-    root: map(path.resolve)(glob.sync('./src/*')),
+    root: map(path.resolve)(glob.sync(`./${manifest.paths.src}/*`)),
     packageMains: ['webpack', 'browser', 'web', 'main'], // use the files in package.json.main, etc
-  // extensions: ['', '.js', '.json']
+    // extensions: ['', '.js', '.json']
   }
 }

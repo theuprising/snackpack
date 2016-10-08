@@ -4,6 +4,7 @@
   "description": "",
   "dependencies": {
     "jsx": "^0.9.89",
+    "pug-html-loader": "^1.0.8",
     "react": "^15.3.2",
     "snackpack": "file:///Users/ajm/data/snackpack"
   },
@@ -17,8 +18,9 @@
     "webpack-dev-server": "^1.16.1"
   },
   "scripts": {
-    "run": "./node_modules/.bin/snackpack run debug production",
-    "watch": "./node_modules/.bin/snackpack watch debug"
+    "build": "snackpack run",
+    "serve": "snackpack serve",
+    "watch": "snackpack watch"
   },
   "author": "Andrew Monks <a@monks.co>",
   "license": "ISC"

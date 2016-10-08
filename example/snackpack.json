@@ -1,0 +1,19 @@
+{
+  "environments": {
+    "defaults": {
+      "builders": [
+        "webpack-dev-server",
+        "babel",
+        "jsx",
+        "postcss",
+        "pug"
+      ]
+    },
+    "production": {
+      "builders": [
+        "uglify"
+      ]
+    }
+  }
+}
+
