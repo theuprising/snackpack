@@ -57,11 +57,15 @@ copy this into your package.json:
 },
 ```
 
-(Local and development are environments, as specified in the manifest)
+Local and production are environments, as specified in the manifest.
+
+Notice how we can stack them: `snackpack serve local production`.
 
 ## Builders
 
 You can write your own builders, and put them into `[your project]/config/snackpack/[builder]/[environment].js`.
+
+You can also add your own configuration to existing builders the same way. Your config will be applied _after_ the default config.
 
 The `defaults` environment will always be applied before any other environments.
 
