@@ -1,6 +1,6 @@
 {
   "name": "snackpack",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Sane defaults and configuration management for Webpack",
   "main": "./dist/snackpack.js",
   "devDependencies": {
@@ -24,7 +24,7 @@
     "postcss-loader": "^0.13.0",
     "precss": "^1.4.0",
     "pug": "^2.0.0-beta6",
-    "pug-html-loader": "file:src/loaders/pug-html-loader",
+    "pug-html-loader": "file:dist/loaders/pug-html-loader",
     "ramda": "^0.22.1",
     "react-hot-loader": "^3.0.0-beta.5",
     "style-loader": "^0.13.1",
