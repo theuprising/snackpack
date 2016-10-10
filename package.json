@@ -1,6 +1,6 @@
 {
   "name": "snackpack",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Sane defaults and configuration management for Webpack",
   "main": "./dist/snackpack.js",
   "devDependencies": {
