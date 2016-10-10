@@ -1,6 +1,6 @@
 {
   "name": "snackpack",
-  "version": "0.0.21",
+  "version": "0.0.22",
   "description": "Sane defaults and configuration management for Webpack",
   "main": "./dist/snackpack.js",
   "devDependencies": {
@@ -20,6 +20,7 @@
     "babel-preset-es2015": "^6.16.0",
     "babel-preset-react": "^6.16.0",
     "babel-preset-react-optimize": "^1.0.1",
+    "babel-preset-stage-0": "^6.16.0",
     "commander": "^2.9.0",
     "copy-webpack-plugin": "^3.0.1",
     "css-loader": "^0.25.0",

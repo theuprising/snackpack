@@ -7,6 +7,7 @@ export default compose(
   addBabelPlugin('transform-decorators-legacy'),
   addBabelPlugin('transform-react-display-name'),
   addBabelPlugin('transform-object-rest-spread'),
+  addBabelPreset('stage-0'),
   addBabelPreset('react-optimize'),
   requireLoader('babel-loader')
 )
