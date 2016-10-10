@@ -1,6 +1,6 @@
 {
   "name": "snackpack",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Sane defaults and configuration management for Webpack",
   "main": "./dist/snackpack.js",
   "devDependencies": {
@@ -37,7 +37,7 @@
     "snackpack": "./dist/snackpack.js"
   },
   "scripts": {
-    "build": "./babel-all.zsh",
+    "build": "./babel-all.zsh; cp -r vendor/* dist/",
     "prepublish": "echo `pwd` ; npm run build"
   },
   "files": [
