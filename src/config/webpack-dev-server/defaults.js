@@ -1,8 +1,7 @@
 import { evolve, merge, prepend, append, compose } from 'ramda'
 import { join } from 'path'
 import webpack from 'webpack'
-import { manifest, projectPath } from '../../util'
-import { requireLoader, addBabelPlugin } from '../../builder-util'
+import { manifest, projectPath, requireLoader, addBabelPlugin } from '../../builder-util'
 
 const conf = manifest.builders['webpack-dev-server']
 
@@ -14,8 +13,8 @@ const addStructure = merge({
 
 const evolver = evolve({
   entry: compose(
-    prepend(`webpack-hot-middleware/client?reload=true&path=${conf.protocol}://${conf.host}:${conf.port}/__webpack_hmr`),
-    prepend('react-hot-loader/patch')
+    prepend('react-hot-loader/patch'),
+    prepend(`webpack-hot-middleware/client?reload=true&path=${conf.protocol}://${conf.host}:${conf.port}/__webpack_hmr`)
   ),
   module: {
     loaders: prepend({
@@ -53,4 +52,3 @@ export default compose(
   addBabelPlugin('react-hot-loader/babel'),
   requireLoader('babel-loader')
 )
-
