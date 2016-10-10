@@ -1,4 +1,4 @@
-import { evolve, append, map } from 'ramda'
+import { evolve, append, map, compose, merge } from 'ramda'
 
 export const projectPath = process.cwd()
 export const manifest = global.__snackpackManifest
@@ -17,11 +17,16 @@ export const addBabelPreset = preset =>
       loaders: map(
         loader => {
           if (loader.loader !== 'babel-loader') return loader
-          return evolve({
-            query: {
-              presets: append(preset)
-            }
-          }, loader)
+          return compose(
+            evolve({
+              query: {
+                presets: append(preset)
+              }
+            }),
+            merge({
+              query: { presets: [] }
+            })
+          )(loader)
         }
       )
     }
@@ -33,11 +38,16 @@ export const addBabelPlugin = plugin =>
       loaders: map(
         loader => {
           if (loader.loader !== 'babel-loader') return loader
-          return evolve({
-            query: {
-              plugins: append(plugin)
-            }
-          }, loader)
+          return compose(
+            evolve({
+              query: {
+                plugins: append(plugin)
+              }
+            }),
+            merge({
+              query: { plugins: [] }
+            })
+          )(loader)
         }
       )
     }
