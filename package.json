@@ -1,6 +1,6 @@
 {
   "name": "snackpack",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Sane defaults and configuration management for Webpack",
   "main": "./dist/snackpack.js",
   "devDependencies": {
@@ -24,7 +24,7 @@
     "postcss-loader": "^0.13.0",
     "precss": "^1.4.0",
     "pug": "^2.0.0-beta6",
-    "pug-html-loader": "file:dist/loaders/pug-html-loader",
+    "pug-html-loader": "git@github.com:theuprising/pug-static-loader.git",
     "ramda": "^0.22.1",
     "react-hot-loader": "^3.0.0-beta.5",
     "style-loader": "^0.13.1",
@@ -37,7 +37,7 @@
     "snackpack": "./dist/snackpack.js"
   },
   "scripts": {
-    "build": "./babel-all.zsh; cp -r vendor/* dist/",
+    "build": "./babel-all.zsh",
     "prepublish": "echo `pwd` ; npm run build"
   },
   "files": [
