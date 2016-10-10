@@ -1,6 +1,6 @@
 {
   "name": "snackpack",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "description": "Sane defaults and configuration management for Webpack",
   "main": "./dist/snackpack.js",
   "devDependencies": {
@@ -27,6 +27,7 @@
     "file-loader": "^0.9.0",
     "glob": "^7.1.0",
     "happypack": "^2.2.1",
+    "json-loader": "^0.5.4",
     "jsx": "^0.9.89",
     "jsx-control-statements": "^3.1.5",
     "lodash": "^4.16.3",

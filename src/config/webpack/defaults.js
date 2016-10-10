@@ -12,7 +12,10 @@ export default {
   ],
   module: {
     noParse: /^\..+$/, // do not parse hidden files
-    loaders: []
+    loaders: [{
+      test: /\.json$/,
+      loader: 'json-loader'
+    }]
   },
   output: {
     path: path.join(projectPath, manifest.paths.dist),
