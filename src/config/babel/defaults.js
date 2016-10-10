@@ -5,7 +5,8 @@ exports.default = {
       exclude: /(node_modules|webpack\/hot)/,
       loader: 'babel-loader',
       query: {
-        presets: [['es2015', {modules: false}]]
+        presets: [['es2015', {modules: false}]],
+        plugins: []
       }
     }]
   }
