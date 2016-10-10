@@ -3,10 +3,8 @@ import React from 'react'
 const List = ({children}) => (
   <ul>
     {React.Children.map(children, c => (
-      <li>
-        {c}
-      </li>
-     ))}
+      <li>{c}</li>
+    ))}
   </ul>
 )
 

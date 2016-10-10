@@ -16,7 +16,7 @@
     "serve": "snackpack serve local",
     "dev": "snackpack serve local development",
     "watch": "snackpack watch",
-    "debug": "snackpack serve -d local development"
+    "debug": "rm -r node_modules/snackpack; npm i; snackpack serve -d local development"
   },
   "author": "Andrew Monks <a@monks.co>",
   "license": "ISC"
