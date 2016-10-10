@@ -6,8 +6,7 @@ export default compose(
   addBabelPlugin('jsx-control-statements'),
   addBabelPlugin('transform-decorators-legacy'),
   addBabelPlugin('transform-react-display-name'),
+  addBabelPlugin('transform-es2015-destructuring'),
   addBabelPreset('react-optimize'),
-  addBabelPreset('transform-es2015-destructuring'),
   requireLoader('babel-loader')
 )
-
