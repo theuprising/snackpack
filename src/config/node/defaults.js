@@ -1,4 +1,4 @@
-import {set} from 'ramda'
+import {set, lensProp} from 'ramda'
 
-export default set('target', 'node')
+export default set(lensProp('target'), 'node')
 
