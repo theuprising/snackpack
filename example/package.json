@@ -4,23 +4,19 @@
   "description": "",
   "dependencies": {
     "jsx": "^0.9.89",
-    "pug-html-loader": "^1.0.8",
     "react": "^15.3.2",
-    "snackpack": "file:///Users/ajm/data/snackpack"
+    "react-dom": "^15.3.2",
+    "react-hot-loader": "^3.0.0-beta.5"
   },
   "devDependencies": {
-    "babel-core": "^6.17.0",
-    "babel-loader": "^6.2.5",
-    "babel-preset-es2015": "^6.16.0",
-    "jsx-loader": "^0.13.2",
-    "react-hot-loader": "^3.0.0-beta.5",
-    "webpack": "^1.13.2",
-    "webpack-dev-server": "^1.16.1"
+    "snackpack": "file:.."
   },
   "scripts": {
     "build": "snackpack run",
-    "serve": "snackpack serve",
-    "watch": "snackpack watch"
+    "serve": "snackpack serve local",
+    "dev": "snackpack serve local development",
+    "watch": "snackpack watch",
+    "debug": "snackpack serve -d local development"
   },
   "author": "Andrew Monks <a@monks.co>",
   "license": "ISC"

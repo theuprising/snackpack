@@ -7,11 +7,11 @@ import path from 'path'
 import { merge, mergeWith, isArray, isFunction } from 'lodash'
 import { Console } from 'console'
 import { inspect } from 'util'
+import { dissoc } from 'ramda'
 import webpack from 'webpack'
-import WebpackDevServer from 'webpack-dev-server'
 import defaultManifest from './default-manifest'
 
-const colorize = x => inspect(x, false, 5, true)
+const colorize = x => inspect(x, false, 6, true)
 
 const identity = x => x
 
@@ -119,7 +119,7 @@ const snackpack = ({debugMode, confDir, manifestFile, environments, cmd}) => {
 
   // build config
   const buildConfig = (environments, builders) => {
-    const config = environments.reduce((lastEnvironmentConfig, environment) => {
+    const reduction = environments.reduce((lastEnvironmentConfig, environment) => {
       return builders.reduce((lastBuilderConfig, builder) => {
         debug(`builder: ${builder}, environment: ${environment}`)
         const newConfig = configFor(builder, environment)
@@ -128,6 +128,7 @@ const snackpack = ({debugMode, confDir, manifestFile, environments, cmd}) => {
         return out
       }, lastEnvironmentConfig)
     }, {snackpack: manifest})
+    const config = dissoc('snackpack')(reduction)
     debug({config})
     return config
   }
@@ -163,9 +164,12 @@ const snackpack = ({debugMode, confDir, manifestFile, environments, cmd}) => {
     case 'watch':
       return webpackWatch(config)
     case 'serve':
-      const compiler = webpack(config)
-      const server = new WebpackDevServer(compiler, config.devServer)
-      server.listen(8080, '127.0.0.1', () => console.log('listening on port 8080'))
+      // const compiler = webpack(config)
+      // const server = new WebpackDevServer(compiler, config.devServer)
+      const server = require('./server.js')
+      server.start(manifest)(config)
+      process.on('exit', server.stop)
+      process.on('uncaughtException', server.stop)
       break
     default:
       return new Error('bad command')

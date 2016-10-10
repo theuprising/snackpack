@@ -2,7 +2,7 @@ import { map } from 'ramda'
 import path from 'path'
 import glob from 'glob'
 import CopyWebpackPlugin from 'copy-webpack-plugin'
-import { projectPath, manifest } from '../../util'
+import { projectPath, manifest } from '../../builder-util'
 
 export default {
   plugins: [
@@ -19,11 +19,17 @@ export default {
     publicPath: '/',
     filename: manifest.builders.webpack.outputFilename
   },
+  stats: {
+    errorDetails: true,
+    colors: true,
+    modules: true,
+    reasons: true
+  },
   entry: ['index.js'],
   resolve: {
-    moduleDirectories: ['node_modules'],
-    root: map(path.resolve)(glob.sync(`./${manifest.paths.src}/*`)),
-    packageMains: ['webpack', 'browser', 'web', 'main'], // use the files in package.json.main, etc
-    // extensions: ['', '.js', '.json']
+    modules: [
+      ...map(path.resolve)(glob.sync(`${projectPath}/${manifest.paths.src}/*`)),
+      'node_modules'
+    ]
   }
 }
