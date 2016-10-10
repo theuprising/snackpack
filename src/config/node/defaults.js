@@ -16,7 +16,7 @@ const makeExterns = compose(
 )
 
 export default compose(
-  set(lensProp('externals'), makeExterns(fs.readDirSync('node_modules'))),
+  set(lensProp('externals'), makeExterns(fs.readdirSync('node_modules'))),
   set(lensProp('target'), 'node')
 )
 
