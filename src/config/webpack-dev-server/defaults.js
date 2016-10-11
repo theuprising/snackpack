@@ -1,4 +1,4 @@
-import { evolve, merge, prepend, append, compose, reduce, type, map, concat } from 'ramda'
+import { evolve, merge, prepend, append, compose, type, map, curry } from 'ramda'
 import { join } from 'path'
 import webpack from 'webpack'
 import { manifest, projectPath, requireLoader, addBabelPlugin } from '../../builder-util'
@@ -11,14 +11,13 @@ const addStructure = merge({
   plugins: []
 })
 
+const resolveSource = curry(join)(projectPath)
+
 const sources = src => {
   if (type(src) === 'Array') {
-    return compose(
-      reduce(concat, []),
-      map(s => join(projectPath, src))
-    )(src)
+    return map(resolveSource)(src)
   } else {
-    return join(projectPath, src)
+    return resolveSource(src)
   }
 }
 
