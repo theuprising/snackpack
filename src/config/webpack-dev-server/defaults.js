@@ -28,6 +28,7 @@ const evolver = evolve({
     append(new webpack.LoaderOptionsPlugin({
       options: {
         devServer: {
+          historyApiFallback: true,
           hot: true,
           inline: true,
           compress: true,
