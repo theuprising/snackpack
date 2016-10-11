@@ -1,4 +1,4 @@
-import { evolve, merge, prepend, append, compose } from 'ramda'
+import { evolve, merge, prepend, append, compose, reduce, type, map, concat } from 'ramda'
 import { join } from 'path'
 import webpack from 'webpack'
 import { manifest, projectPath, requireLoader, addBabelPlugin } from '../../builder-util'
@@ -11,6 +11,17 @@ const addStructure = merge({
   plugins: []
 })
 
+const sources = src => {
+  if (type(src) === 'Array') {
+    return compose(
+      reduce(concat, []),
+      map(s => join(projectPath, src))
+    )(src)
+  } else {
+    return join(projectPath, src)
+  }
+}
+
 const evolver = evolve({
   entry: compose(
     prepend('react-hot-loader/patch'),
@@ -20,7 +31,7 @@ const evolver = evolve({
     loaders: prepend({
       test: /.jsx?$/,
       loaders: ['react-hot-loader/webpack'],
-      include: join(projectPath, manifest.paths.src)
+      include: sources(manifest.paths.src)
     })
   },
   plugins: compose(
@@ -53,3 +64,4 @@ export default compose(
   addBabelPlugin('react-hot-loader/babel'),
   requireLoader('babel-loader')
 )
+
