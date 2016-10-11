@@ -1,4 +1,4 @@
-import { evolve, merge, prepend, append, compose, type, map, curry } from 'ramda'
+import { evolve, merge, prepend, append, compose, type, map } from 'ramda'
 import { join } from 'path'
 import webpack from 'webpack'
 import { manifest, projectPath, requireLoader, addBabelPlugin } from '../../builder-util'
@@ -11,7 +11,8 @@ const addStructure = merge({
   plugins: []
 })
 
-const resolveSource = curry(join)(projectPath)
+const curriedJoin = a => b => join(a, b)
+const resolveSource = curriedJoin(projectPath)
 
 const sources = src => {
   if (type(src) === 'Array') {
@@ -33,28 +34,7 @@ const evolver = evolve({
       include: sources(manifest.paths.src)
     })
   },
-  plugins: compose(
-    append(new webpack.HotModuleReplacementPlugin()),
-    append(new webpack.LoaderOptionsPlugin({
-      options: {
-        devServer: {
-          historyApiFallback: true,
-          hot: true,
-          inline: true,
-          compress: true,
-          contentBase: `./${manifest.paths.dist}`,
-          colors: true,
-          proxy: conf.proxy
-            ? {
-              '/api': {
-                target: conf.proxy.target,
-                pathRewrite: {'^/api': ''}
-              }
-            } : undefined
-        }
-      }
-    }))
-  )
+  plugins: append(new webpack.HotModuleReplacementPlugin())
 })
 
 export default compose(
