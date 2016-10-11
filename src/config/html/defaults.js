@@ -1,9 +1,4 @@
-import { merge, append, compose, evolve } from 'ramda'
-
-const addStructure = merge({
-  module: { loaders: [] },
-  entry: []
-})
+import { append, compose, evolve } from 'ramda'
 
 const evolver = evolve({
   module: {
@@ -15,7 +10,6 @@ const evolver = evolve({
 })
 
 export default compose(
-  evolver,
-  addStructure
+  evolver
 )
 

@@ -3,13 +3,7 @@ import webpack from 'webpack'
 import autoprefixer from 'autoprefixer'
 import precss from 'precss'
 
-const addStructure = merge({
-  module: { loaders: [] },
-  entry: [],
-  plugins: []
-})
-
-const evolver = evolve({
+export default evolve({
   module: {
     loaders: append({
       test: /\.css$/,
@@ -26,7 +20,3 @@ const evolver = evolve({
   )
 })
 
-export default compose(
-  evolver,
-  addStructure
-)

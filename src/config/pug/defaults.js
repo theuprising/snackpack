@@ -1,11 +1,6 @@
 import { merge, append, compose, evolve } from 'ramda'
 
-const addStructure = merge({
-  module: { loaders: [] },
-  entry: []
-})
-
-const evolver = evolve({
+export default evolve({
   module: {
     loaders: append({
       test: /\.(pug|jade)$/,
@@ -13,9 +8,3 @@ const evolver = evolve({
     })
   }
 })
-
-export default compose(
-  evolver,
-  addStructure
-)
-

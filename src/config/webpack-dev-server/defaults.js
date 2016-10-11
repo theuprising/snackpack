@@ -1,15 +1,9 @@
-import { evolve, merge, prepend, append, compose, type, map } from 'ramda'
+import { evolve, prepend, append, compose, type, map } from 'ramda'
 import { join } from 'path'
 import webpack from 'webpack'
 import { manifest, projectPath, requireLoader, addBabelPlugin } from '../../builder-util'
 
 const conf = manifest.builders['webpack-dev-server']
-
-const addStructure = merge({
-  entry: [],
-  module: { loaders: [] },
-  plugins: []
-})
 
 const curriedJoin = a => b => join(a, b)
 const resolveSource = curriedJoin(projectPath)
@@ -39,7 +33,6 @@ const evolver = evolve({
 
 export default compose(
   evolver,
-  addStructure,
   addBabelPlugin('react-hot-loader/babel'),
   requireLoader('babel-loader')
 )

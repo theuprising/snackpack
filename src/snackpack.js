@@ -7,7 +7,7 @@ import path from 'path'
 import { merge, mergeWith, isArray, isFunction } from 'lodash'
 import { Console } from 'console'
 import { inspect } from 'util'
-import { dissoc } from 'ramda'
+import { view, dissoc, lensPath } from 'ramda'
 import webpack from 'webpack'
 import defaultManifest from './default-manifest'
 
@@ -40,11 +40,15 @@ const handleWebpackErrors = (err, stats) => {
 
 const meta = require('../package.json')
 
-const snackpack = ({debugMode, confDir, manifestFile, environments, cmd}) => {
+const snackpack = ({debugMode, confDir, manifestFile, environments, cmd, debugFollow}) => {
   // logging function
   const debug = debugMode
     ? stderr
     : identity
+
+  const debugFollowLens = debugFollow
+    ? lensPath(JSON.parse(debugFollow))
+    : null
 
   debug({confDir, manifestFile, environments, cmd, debugMode})
 
@@ -103,15 +107,13 @@ const snackpack = ({debugMode, confDir, manifestFile, environments, cmd}) => {
     return out
   }
 
-  const snackpackConfigFor = debug(getConfig(debug(snackpackConfigPath)))
-  const projectConfigFor = debug(getConfig(debug(projectConfigPath)))
+  const snackpackConfigFor = getConfig(snackpackConfigPath)
+  const projectConfigFor = getConfig(projectConfigPath)
 
   const configFor = (builder, environment) => {
     const builderConfig = snackpackConfigFor(builder, environment)
     const projectConfig = projectConfigFor(builder, environment)
     const out = mergeDeep(builderConfig, projectConfig)
-    debug(`config for builder: ${builder}, environment: ${environment}:`)
-    debug(out)
     return out
   }
 
@@ -126,12 +128,12 @@ const snackpack = ({debugMode, confDir, manifestFile, environments, cmd}) => {
         debug(`builder: ${builder}, environment: ${environment}`)
         const newConfig = configFor(builder, environment)
         const out = applyConfig(lastBuilderConfig, newConfig)
-        debug({out})
+        debug({newConfig})
+        if (debugFollowLens) console.log('following', view(debugFollowLens, out))
         return out
       }, lastEnvironmentConfig)
     }, {snackpack: manifest})
     const config = dissoc('snackpack')(reduction)
-    debug({config})
     return config
   }
 
@@ -139,7 +141,6 @@ const snackpack = ({debugMode, confDir, manifestFile, environments, cmd}) => {
 
   const webpackCallback = (err, stats) => {
     handleWebpackErrors(err, stats)
-  // debug({stats})
   }
 
   const webpackRun = config => {
@@ -188,13 +189,15 @@ const command = commander
   .option('-c, --conf-dir [confDir]', 'Set the configuration directory [snackpack]', 'snackpack')
   .option('-m, --manifest [manifest]', 'Set the manifest file [snackpack.json]', 'snackpack.json')
   .option('-d, --debug-mode', 'Use debug mode')
+  .option('-f, --debug-follow [debugFollow]', 'Follow a lens through the snackpack process [null]', null)
   .parse(process.argv)
 
 // parse args
-const {confDir, manifest, debugMode, args} = command
+const {confDir, manifest, debugMode, args, debugFollow} = command
 const [cmd, ..._environments] = args
 const environments = ['defaults', ..._environments]
 
-snackpack({environments, confDir, manifestFile: manifest, debugMode, cmd})
+snackpack({environments, confDir, manifestFile: manifest, debugMode, cmd, debugFollow})
 
 export default snackpack
+
