@@ -183,7 +183,7 @@ const command = commander
   .version(meta.version)
   .usage('<cmd> [options] [environments...]')
   .arguments('<cmd> [environments...]')
-  .option('-c, --conf-dir [confDir]', 'Set the configuration directory [config]', 'config')
+  .option('-c, --conf-dir [confDir]', 'Set the configuration directory [snackpack]', 'snackpack')
   .option('-m, --manifest [manifest]', 'Set the manifest file [snackpack.json]', 'snackpack.json')
   .option('-d, --debug-mode', 'Use debug mode')
   .parse(process.argv)

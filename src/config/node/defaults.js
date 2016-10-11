@@ -1,5 +1,5 @@
 import fs from 'fs'
-import {set, lensProp, compose, map} from 'ramda'
+import {assoc, assocPath, compose, map, filter} from 'ramda'
 
 const detupelize = arrOfTupels => {
   let obj = {}
@@ -12,11 +12,17 @@ const detupelize = arrOfTupels => {
 
 const makeExterns = compose(
   detupelize,
+  filter(m => m !== '.bin'),
   map(m => [m, `commonjs ${m}`])
 )
 
 export default compose(
-  set(lensProp('externals'), makeExterns(fs.readdirSync('node_modules'))),
-  set(lensProp('target'), 'node')
+  assocPath(['output', 'libraryTarget'], 'commonjs2'),
+  assoc('externals', makeExterns(fs.readdirSync('node_modules'))),
+  assoc('target', 'node'),
+  assoc('node', {
+    __filename: false,
+    __dirname: false
+  })
 )
 

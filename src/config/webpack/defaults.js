@@ -1,8 +1,23 @@
-import { map } from 'ramda'
+import { map, type, reduce, concat, compose } from 'ramda'
 import path from 'path'
 import glob from 'glob'
 import CopyWebpackPlugin from 'copy-webpack-plugin'
 import { projectPath, manifest } from '../../builder-util'
+
+const source = src =>
+  map(path.resolve)(glob.sync(`${projectPath}/${src}/*`))
+
+const sources = src => {
+  if (type(src) === 'Array') {
+    return compose(
+      reduce(concat, []),
+      map(source)
+    )(src)
+  }
+  return source(src)
+}
+
+const moduleSources = sources(manifest.paths.src)
 
 export default {
   plugins: [
@@ -31,8 +46,9 @@ export default {
   entry: ['index.js'],
   resolve: {
     modules: [
-      ...map(path.resolve)(glob.sync(`${projectPath}/${manifest.paths.src}/*`)),
+      ...moduleSources,
       'node_modules'
     ]
   }
 }
+
