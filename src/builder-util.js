@@ -2,6 +2,7 @@ import { evolve, append, map, compose, merge } from 'ramda'
 
 export const projectPath = process.cwd()
 export const manifest = global.__snackpackManifest
+export const environments = global.__snackpackEnvironments
 
 export const checkForLoader = loader => conf =>
   conf.module.loaders.find(l => l.loader === loader)

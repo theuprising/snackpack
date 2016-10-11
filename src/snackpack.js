@@ -48,6 +48,8 @@ const snackpack = ({debugMode, confDir, manifestFile, environments, cmd}) => {
 
   debug({confDir, manifestFile, environments, cmd, debugMode})
 
+  global.__snackpackEnvironments = environments
+
   // get cwd
   const makeProjectPath = (cwd =>
     (...p) => path.join(cwd, ...p)
