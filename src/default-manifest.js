@@ -6,16 +6,16 @@ export default {
   },
   builders: {
     webpack: {
-      entry: ['index.js'],
+      entry: ['js/index.js'],
       outputFilename: 'index.js'
     },
     'webpack-dev-server': {
       port: 8080,
       protocol: 'http',
-      host: '0.0.0.0',
-      proxy: {
-        target: 'http://localhost:3000'
-      }
+      host: '0.0.0.0'
+      // proxy: {
+      //   target: 'http://localhost:3000'
+      // }
     }
   }
 }
