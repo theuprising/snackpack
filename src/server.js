@@ -1,5 +1,6 @@
 import http from 'http'
 import express from 'express'
+import morgan from 'morgan'
 import webpack from 'webpack'
 import webpackDevMiddleware from 'webpack-dev-middleware'
 import webpackHotMiddleware from 'webpack-hot-middleware'
@@ -18,6 +19,7 @@ const spaMiddleware = path => (req, res, next) => {
 }
 export const start = manifest => webpackConfig => {
   const compiler = webpack(webpackConfig)
+  app.use(morgan('dev'))
   app.use(spaMiddleware('/'))
   app.use(webpackDevMiddleware(compiler, webpackConfig.devServer))
   app.use(webpackHotMiddleware(compiler, {
