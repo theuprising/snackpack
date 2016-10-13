@@ -141,6 +141,7 @@ const snackpack = ({debugMode, confDir, manifestFile, environments, cmd, debugFo
 
   const webpackCallback = (err, stats) => {
     handleWebpackErrors(err, stats)
+    console.log('built')
   }
 
   const webpackRun = config => {
