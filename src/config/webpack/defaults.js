@@ -3,7 +3,7 @@ import path from 'path'
 import CopyWebpackPlugin from 'copy-webpack-plugin'
 import { projectPath, manifest } from '../../builder-util'
 
-const source = src => src
+const source = src => path.resolve(projectPath, src)
 
 const sources = src => {
   if (type(src) === 'Array') {
@@ -38,7 +38,9 @@ export default {
     modules: true,
     reasons: true
   },
-  entry: manifest.builders.webpack.entry,
+  entry: type(manifest.builders.webpack.entry) === 'Array'
+    ? manifest.builders.webpack.entry
+    : [manifest.builders.webpack.entry],
   resolve: {
     modules: [
       ...moduleSources,
