@@ -7,7 +7,7 @@ import path from 'path'
 import { merge, mergeWith, isArray, isFunction } from 'lodash'
 import { Console } from 'console'
 import { inspect } from 'util'
-import { view, dissoc, lensPath } from 'ramda'
+import { view, dissoc, lensPath, compose } from 'ramda'
 import webpack from 'webpack'
 import defaultManifest from './default-manifest'
 
@@ -36,6 +36,7 @@ const handleWebpackErrors = (err, stats) => {
   const statsAsJson = stats.toJson()
   if (statsAsJson.errors.length > 0) { stderr(statsAsJson.errors); throw new Error(`webpack build error: ${statsAsJson.errors}`) }
   if (statsAsJson.warnings.length > 0) stderr(statsAsJson.warnings)
+  return true
 }
 
 const meta = require('../package.json')
@@ -139,14 +140,14 @@ const snackpack = ({debugMode, confDir, manifestFile, environments, cmd, debugFo
 
   const config = buildConfig(environments, builders)
 
-  const webpackCallback = (err, stats) => {
-    handleWebpackErrors(err, stats)
-    console.log('built')
-  }
-
   const webpackRun = config => {
     const compiler = webpack(config)
-    return compiler.run(webpackCallback)
+    return compiler.run(compose(
+      () => console.log('built, should have exited'),
+      () => process.exit(),
+      () => console.log('built, exiting'),
+      handleWebpackErrors
+    ))
   }
 
   const webpackWatch = config => {
@@ -154,7 +155,7 @@ const snackpack = ({debugMode, confDir, manifestFile, environments, cmd, debugFo
     return compiler.watch({
       aggregateTimeout: 300,
       poll: true
-    }, webpackCallback)
+    }, handleWebpackErrors)
   }
 
   stdout('done')
