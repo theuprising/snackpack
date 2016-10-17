@@ -11,6 +11,13 @@ import { view, dissoc, lensPath, compose } from 'ramda'
 import webpack from 'webpack'
 import defaultManifest from './default-manifest'
 
+import 'babel-polyfill'
+import babel from 'babel-register'
+babel({
+  presets: ['stage-0'],
+  plugins: ['transform-object-rest-spread']
+})
+
 const colorize = x => inspect(x, false, 6, true)
 
 const identity = x => x
