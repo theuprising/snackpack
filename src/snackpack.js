@@ -105,7 +105,7 @@ const snackpack = ({debugMode, confDir, manifestFile, environments, cmd, debugFo
     let out
     try {
       const got = require(path).default
-      out = got
+      out = got.default ? got.default : got
       stderr(`using config file at ${path}.js`)
     } catch (e) {
       debug(e)
