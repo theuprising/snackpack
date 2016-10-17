@@ -8,8 +8,6 @@ Snackpack imports and merges configuration files, then passes them to webpack.
 
 **The example project _also is not_ up to date.**
 
-When we start using it in production (soon) I'll kick off semver 1.0.0 and update the docs.
-
 ## Installation
 
 `npm install --save-dev snackpack`
