@@ -14,7 +14,7 @@ import defaultManifest from './default-manifest'
 import 'babel-polyfill'
 import babel from 'babel-register'
 babel({
-  presets: ['stage-0'],
+  presets: ['stage-0', 'es2015'],
   plugins: ['transform-object-rest-spread']
 })
 
