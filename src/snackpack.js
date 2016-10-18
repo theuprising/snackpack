@@ -11,6 +11,13 @@ import { view, dissoc, lensPath, compose } from 'ramda'
 import webpack from 'webpack'
 import defaultManifest from './default-manifest'
 
+import 'babel-polyfill'
+import babel from 'babel-register'
+babel({
+  presets: ['stage-0'],
+  plugins: ['transform-object-rest-spread']
+})
+
 const colorize = x => inspect(x, false, 6, true)
 
 const identity = x => x
@@ -98,7 +105,7 @@ const snackpack = ({debugMode, confDir, manifestFile, environments, cmd, debugFo
     let out
     try {
       const got = require(path).default
-      out = got
+      out = got.default ? got.default : got
       stderr(`using config file at ${path}.js`)
     } catch (e) {
       debug(e)
