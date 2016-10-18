@@ -1,4 +1,4 @@
 import { assoc } from 'ramda'
 
-export default assoc('devtool', 'sourcemap')
+export default assoc('devtool', 'source-map')
 
