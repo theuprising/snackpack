@@ -1,4 +1,4 @@
-import { evolve, prepend, append, compose, type, map } from 'ramda'
+import { evolve, assoc, prepend, append, compose, type, map } from 'ramda'
 import { join } from 'path'
 import webpack from 'webpack'
 import { manifest, projectPath, requireLoader, addBabelPlugin } from '../../builder-util'
@@ -17,10 +17,12 @@ const sources = src => {
 }
 
 const evolver = evolve({
+  output: assoc('devtoolModuleFilenameTemplate', '/[absolute-resource-path]'),
   entry: compose(
     prepend('react-hot-loader/patch'),
     prepend(`webpack-hot-middleware/client?reload=true&path=${conf.protocol}://${conf.host}:${conf.port}/__webpack_hmr`)
   ),
+  devtool: () => 'eval',
   module: {
     loaders: prepend({
       test: /.jsx?$/,
