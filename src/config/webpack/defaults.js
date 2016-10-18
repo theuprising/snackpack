@@ -38,6 +38,7 @@ export default {
     modules: true,
     reasons: true
   },
+  devtool: 'source-map',
   entry: type(manifest.builders.webpack.entry) === 'Array'
     ? manifest.builders.webpack.entry
     : [manifest.builders.webpack.entry],
