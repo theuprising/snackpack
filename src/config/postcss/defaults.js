@@ -3,7 +3,7 @@ import webpack from 'webpack'
 import autoprefixer from 'autoprefixer'
 import precss from 'precss'
 import cssnext from 'postcss-cssnext'
-import postcssImport from 'postcss-import'
+import postcssImport from 'postcss-smart-import'
 
 export default evolve({
   module: {
@@ -15,8 +15,11 @@ export default evolve({
   plugins: append(
     new webpack.LoaderOptionsPlugin({
       options: {
-        postcss: [
-          postcssImport({addDependencyTo: webpack}),
+        postcss: (webpack) => [
+          postcssImport({
+            addDependencyTo: webpack,
+            from: 'css/partials'
+          }),
           precss,
           cssnext,
           autoprefixer
