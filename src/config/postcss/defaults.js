@@ -1,6 +1,5 @@
 import { evolve, append } from 'ramda'
 import webpack from 'webpack'
-import autoprefixer from 'autoprefixer'
 import precss from 'precss'
 import cssnext from 'postcss-cssnext'
 import postcssImport from 'postcss-smart-import'
@@ -21,8 +20,7 @@ export default evolve({
             from: 'css/partials'
           }),
           precss,
-          cssnext,
-          autoprefixer
+          cssnext
         ]
       }
     })
