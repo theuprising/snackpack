@@ -7,7 +7,7 @@ export default {
   builders: {
     webpack: {
       entry: {
-        index: ['js/index.js']
+        // index: ['js/index.js']
       },
       outputFilename: '[name].js'
     },
