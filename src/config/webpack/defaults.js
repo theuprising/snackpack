@@ -1,4 +1,4 @@
-import { map, type } from 'ramda'
+import { map, type, compose } from 'ramda'
 import path from 'path'
 import CopyWebpackPlugin from 'copy-webpack-plugin'
 import { projectPath, manifest } from '../../builder-util'
@@ -11,6 +11,17 @@ const sources = src => {
   }
   return [source(src)]
 }
+
+const validateEntry = compose(
+  map(e => {
+    if (type(e) !== 'Array') throw new Error('entry values must be arrays')
+    return e
+  }),
+  entry => {
+    if (type(entry) !== 'Object') throw new Error('entry must be an object')
+    return entry
+  }
+)
 
 const moduleSources = sources(manifest.paths.src)
 
@@ -41,16 +52,7 @@ export default {
     reasons: true
   },
   devtool: 'source-map',
-  entry: (entry => {
-    switch (type(entry)) {
-      case 'Array':
-        return entry
-      case 'String':
-        return [entry]
-      case 'Object':
-        return entry
-    }
-  })(manifest.builders.webpack.entry),
+  entry: validateEntry(manifest.builders.webpack.entry),
   resolve: {
     modules: [
       ...moduleSources,

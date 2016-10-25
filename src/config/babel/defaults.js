@@ -1,7 +1,7 @@
-import { evolve, append } from 'ramda'
+import { evolve, append, prepend, map } from 'ramda'
 
 export default evolve({
-  entry: e => ['babel-polyfill', ...e],
+  entry: map(prepend('babel-polyfill')),
   module: {
     loaders: append({
       test: /\.jsx?$/,

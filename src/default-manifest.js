@@ -6,8 +6,10 @@ export default {
   },
   builders: {
     webpack: {
-      entry: ['js/index.js'],
-      outputFilename: 'index.js'
+      entry: {
+        index: ['js/index.js']
+      },
+      outputFilename: '[name].js'
     },
     'webpack-dev-server': {
       port: 8080,

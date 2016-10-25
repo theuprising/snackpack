@@ -18,10 +18,10 @@ const sources = src => {
 
 const evolver = evolve({
   output: assoc('devtoolModuleFilenameTemplate', '/[absolute-resource-path]'),
-  entry: compose(
+  entry: map(compose(
     prepend('react-hot-loader/patch'),
     prepend(`webpack-hot-middleware/client?reload=true&path=${conf.protocol}://${conf.host}:${conf.port}/__webpack_hmr`)
-  ),
+  )),
   devtool: () => 'eval',
   module: {
     loaders: prepend({
