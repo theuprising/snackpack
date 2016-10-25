@@ -9,10 +9,7 @@ export default evolve({
       console.log({babelLoader, babelLoaderIndex, loaders})
       return update(
         babelLoaderIndex,
-        {
-          ...babelLoader,
-          exclude: /node_modules\/(?!crumbles)|webpack\/hot/
-        },
+        Object.assign({}, babelLoader, {exclude: /node_modules\/(?!crumbles)|webpack\/hot/}),
         loaders
       )
     }
