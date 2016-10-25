@@ -30,7 +30,9 @@ export default {
   output: {
     path: path.join(projectPath, manifest.paths.dist),
     publicPath: '/',
-    filename: manifest.builders.webpack.outputFilename
+    filename: type(manifest.builders.webpack.entry) === 'Object'
+      ? '[name].js'
+      : manifest.builders.webpack.outputFilename
   },
   stats: {
     errorDetails: true,
@@ -39,9 +41,16 @@ export default {
     reasons: true
   },
   devtool: 'source-map',
-  entry: type(manifest.builders.webpack.entry) === 'Array'
-    ? manifest.builders.webpack.entry
-    : [manifest.builders.webpack.entry],
+  entry: (entry => {
+    switch (type(entry)) {
+      case 'Array':
+        return entry
+      case 'String':
+        return [entry]
+      case 'Object':
+        return entry
+    }
+  })(manifest.builders.webpack.entry),
   resolve: {
     modules: [
       ...moduleSources,

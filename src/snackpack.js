@@ -1,6 +1,11 @@
 #!/usr/bin/env node
 
 // snackpack!
+//
+// this code is kinda awful, but the idea is that you don't have to look at it.
+// instead, look at the stuff in `config`. that's where actual webpack config happens.
+// this file _orchestrates_ that webpack configuration
+//            ^ funny word
 
 import commander from 'commander'
 import path from 'path'
