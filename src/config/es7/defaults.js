@@ -8,6 +8,7 @@ export default compose(
   addBabelPlugin('transform-react-display-name'),
   addBabelPlugin('transform-object-rest-spread'),
   addBabelPreset('stage-0'),
+  addBabelPreset('latest'),
   addBabelPreset('react-optimize'),
   requireLoader('babel-loader')
 )
