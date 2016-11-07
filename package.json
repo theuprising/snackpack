@@ -1,10 +1,50 @@
 {
-  "name": "snackpack",
-  "version": "3.1.0",
-  "description": "Sane defaults and configuration management for Webpack",
-  "main": "./dist/snackpack.js",
-  "devDependencies": {
-    "babel-cli": "^6.16.0"
+  "name": "crumbles",
+  "version": "3.0.7",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/node.js",
+  "browser": "./dist/browser.js",
+  "license": "MIT",
+  "scripts": {
+    "install:types": "flow-typed install",
+    "test": "node ./node_modules/.bin/snackstack test",
+    "repl": "node ./node_modules/.bin/snackstack repl",
+    "build": "node ./node_modules/.bin/snackstack build"
+  },
+  "pre-commit": "test",
+  "standard": {
+    "parser": "babel-eslint",
+    "plugins": [
+      "flowtype"
+    ],
+    "ignore": [
+      "docs",
+      "flow-typed",
+      "type-definitions"
+    ]
+  },
+  "babel": {
+    "plugins": [
+      [
+        "transform-runtime",
+        {
+          "polyfill": false,
+          "regenerator": true
+        }
+      ]
+    ],
+    "presets": [
+      [
+        "latest",
+        {
+          "modules": false
+        }
+      ],
+      "stage-0",
+      "react"
+    ]
   },
   "dependencies": {
     "autoprefixer": "^6.5.0",
@@ -53,27 +93,10 @@
     "webpack-dev-server": "^2.1.0-beta.8",
     "webpack-hot-middleware": "^2.10.0"
   },
-  "bin": {
-    "snackpack": "./dist/snackpack.js"
-  },
-  "scripts": {
-    "build": "./babel-all.zsh",
-    "prepublish": "echo `pwd` ; npm run build"
-  },
-  "files": [
-    "dist"
-  ],
-  "author": "Andrew J. Monks <a@monks.co>",
-  "license": "ISC",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/theuprising/snackpack.git"
-  },
-  "keywords": [
-    "webpack"
-  ],
-  "bugs": {
-    "url": "https://github.com/theuprising/snackpack/issues"
-  },
-  "homepage": "https://github.com/theuprising/snackpack#readme"
+  "devDependencies": {
+    "documentation": "^4.0.0-beta12",
+    "flow": "^0.2.3",
+    "flow-typed": "^2.0.0",
+    "snackstack": "0.0.3"
+  }
 }

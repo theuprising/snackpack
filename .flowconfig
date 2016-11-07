@@ -1,0 +1,9 @@
+[ignore]
+
+[include]
+
+[libs]
+type-definitions/
+
+[options]
+suppress_comment= \\(.\\|\n\\)*\\$FlowIgnore
