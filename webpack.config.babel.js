@@ -1,6 +1,6 @@
 import path from 'path'
 import fs from 'fs'
-import { assoc, assocPath, compose, map, filter, always, evolve, prepend, append } from 'ramda'
+import { assoc, assocPath, compose, map, filter, always, evolve, append } from 'ramda'
 
 const webpack = always({
   module: {

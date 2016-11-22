@@ -9,9 +9,11 @@
   "license": "MIT",
   "scripts": {
     "install:types": "flow-typed install",
-    "test": "node ./node_modules/.bin/snackstack test",
-    "repl": "node ./node_modules/.bin/snackstack repl",
-    "build": "node ./node_modules/.bin/snackstack build"
+    "test": "snackstack test",
+    "repl": "snackstack repl",
+    "docs": "snackstack docs",
+    "build": "snackstack build",
+    "postinstall": "yarn-bin-fix"
   },
   "pre-commit": "test",
   "standard": {
@@ -97,6 +99,7 @@
     "documentation": "^4.0.0-beta12",
     "flow": "^0.2.3",
     "flow-typed": "^2.0.0",
-    "snackstack": "0.0.3"
+    "snackstack": "0.0.12",
+    "yarn-bin-fix": "^0.1.15"
   }
 }

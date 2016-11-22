@@ -7,7 +7,7 @@ export node from './node'
 export postcss from './postcss'
 export pug from './pug'
 export uglify from './uglify'
-export util from './util'
+export * as util from './util'
 export webpack from './webpack'
 export webpackDevServer from './webpack-dev-server'
 

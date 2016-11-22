@@ -1,7 +1,7 @@
 import { map, type, compose } from 'ramda'
 import path from 'path'
 import CopyWebpackPlugin from 'copy-webpack-plugin'
-import { projectPath, manifest } from '../util'
+import { projectPath } from './util'
 
 const source = src => path.resolve(projectPath, src)
 
@@ -23,12 +23,29 @@ const validateEntry = compose(
   }
 )
 
-const moduleSources = sources(manifest.paths.src)
+export type Entry = any
+export type WebpackOptions = {
+  projectPath: string,
+  paths: {
+    src: string,
+    resources: string,
+    dist: string
+  },
+  entry: Entry
+}
 
-export default {
+/**
+ * @name webpack
+ * @param {WebpackOptions} options
+ * @returns {WebpackConfig} config
+ * @sig WebpackOptions -> Config
+ * @desc
+ * adds dedupe, uglifyjs, minimize, and NODE_ENV=production
+ */
+export default options => ({
   plugins: [
     new CopyWebpackPlugin([
-      { from: `${manifest.paths.resources}` }
+      { from: `${options.paths.resources}` }
     ])
   ],
   module: {
@@ -39,11 +56,9 @@ export default {
     }]
   },
   output: {
-    path: path.join(projectPath, manifest.paths.dist),
+    path: path.join(projectPath, options.paths.dist),
     publicPath: '/',
-    filename: type(manifest.builders.webpack.entry) === 'Object'
-      ? '[name].js'
-      : manifest.builders.webpack.outputFilename
+    filename: '[name].js'
   },
   stats: {
     errorDetails: true,
@@ -52,12 +67,12 @@ export default {
     reasons: true
   },
   devtool: 'source-map',
-  entry: validateEntry(manifest.builders.webpack.entry),
+  entry: validateEntry(options.entry),
   resolve: {
     modules: [
-      ...moduleSources,
+      ...sources(options.paths.src),
       'node_modules'
     ]
   }
-}
+})
 

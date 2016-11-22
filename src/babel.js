@@ -1,5 +1,15 @@
+// @flow
+
 import { evolve, append, prepend, map } from 'ramda'
 
+/**
+ * @name babel
+ * @param {WebpackConfig} config
+ * @returns {WebpackConfig} config
+ * @sig Config -> Config
+ * @desc
+ * adds babel and some babel plugins
+ */
 export default evolve({
   entry: map(prepend('babel-polyfill')),
   module: {
