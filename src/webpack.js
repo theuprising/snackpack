@@ -40,7 +40,7 @@ export type WebpackOptions = {
  * @returns {WebpackConfig} config
  * @sig WebpackOptions -> Config
  * @desc
- * adds dedupe, uglifyjs, minimize, and NODE_ENV=production
+ * unary, not binary like the others. produces a basic webpack.config
  */
 export default options => ({
   plugins: [
