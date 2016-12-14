@@ -13,7 +13,6 @@
     "repl": "snackstack repl",
     "docs": "snackstack docs",
     "build": "snackstack build",
-    "postinstall": "yarn-bin-fix",
     "prepublish": "npm run test; npm run build"
   },
   "pre-commit": "test",
@@ -101,7 +100,6 @@
     "flow": "^0.2.3",
     "flow-typed": "^2.0.0",
     "snackstack": "0.0.12",
-    "standard": "^8.6.0",
-    "yarn-bin-fix": "^0.1.15"
+    "standard": "^8.6.0"
   }
 }
