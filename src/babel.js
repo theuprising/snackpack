@@ -1,6 +1,6 @@
 // @flow
 
-import { evolve, append, prepend, map } from 'ramda'
+import R from 'ramda'
 
 /**
  * @name babel
@@ -10,9 +10,9 @@ import { evolve, append, prepend, map } from 'ramda'
  * @desc
  * adds the babel loader for `/\.jsx?$/` files
  */
-export default evolve({
+export default R.evolve({
   module: {
-    loaders: append({
+    loaders: R.append({
       test: /\.jsx?$/,
       exclude: /(node_modules|webpack\/hot)/,
       loader: 'babel-loader'
