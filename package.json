@@ -96,6 +96,7 @@
     "webpack-hot-middleware": "^2.10.0"
   },
   "devDependencies": {
+    "babel-preset-latest": "^6.16.0",
     "documentation": "^4.0.0-beta12",
     "flow": "^0.2.3",
     "flow-typed": "^2.0.0",
