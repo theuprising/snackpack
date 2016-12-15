@@ -12,7 +12,7 @@
     "test": "snackstack test",
     "repl": "snackstack repl",
     "docs": "snackstack docs",
-    "build": "snackstack build",
+    "build": "webpack",
     "prepublish": "npm run test; npm run build"
   },
   "pre-commit": "test",
