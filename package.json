@@ -9,7 +9,7 @@
   "license": "MIT",
   "scripts": {
     "install:types": "flow-typed install",
-    "test": "snackstack test",
+    "test": "standard | snazzy && jest && flow",
     "repl": "snackstack repl",
     "docs": "snackstack docs",
     "build": "webpack",
@@ -99,8 +99,11 @@
     "babel-preset-latest": "^6.16.0",
     "documentation": "^4.0.0-beta12",
     "flow": "^0.2.3",
+    "flow-bin": "^0.37.0",
     "flow-typed": "^2.0.0",
+    "jest": "^18.0.0",
     "snackstack": "0.0.12",
+    "snazzy": "^5.0.0",
     "standard": "^8.6.0"
   }
 }
